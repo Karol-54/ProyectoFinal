@@ -14,8 +14,8 @@ class ReportRepository(private val database: AppDatabase) {
         }
     }
 
-    fun getReportById(id: Int): LiveData<Report> {
-        return database.reportDao().getReportById(id).map { it.toReport() }
+    fun getReportById(id: Int): LiveData<Report?> {
+        return database.reportDao().getReportById(id).map { it?.toReport() }
     }
 
     fun getTotalReports(): LiveData<Int> = database.reportDao().getTotalReports()

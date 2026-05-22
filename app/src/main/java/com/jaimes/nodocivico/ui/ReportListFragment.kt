@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jaimes.nodocivico.R
 import com.jaimes.nodocivico.databinding.FragmentReportListBinding
 import com.jaimes.nodocivico.viewmodel.ReportViewModel
 
@@ -41,13 +40,31 @@ class ReportListFragment : Fragment() {
         binding.recyclerViewReports.adapter = adapter
 
         viewModel.reports.observe(viewLifecycleOwner) { reportList ->
-            adapter.submitList(reportList)
-            binding.tvEmptyMessage.visibility =
-                if (reportList.isEmpty()) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = View.GONE
+
+            if (reportList.isEmpty()) {
+                binding.tvEmptyMessage.visibility = View.VISIBLE
+                binding.recyclerViewReports.visibility = View.GONE
+            } else {
+                binding.tvEmptyMessage.visibility = View.GONE
+                binding.recyclerViewReports.visibility = View.VISIBLE
+                adapter.submitList(reportList)
+            }
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
+            if (errorMsg != null) {
+                binding.progressBar.visibility = View.GONE
+                binding.tvErrorMessage.visibility = View.VISIBLE
+                binding.recyclerViewReports.visibility = View.GONE
+                binding.tvEmptyMessage.visibility = View.GONE
+            }
         }
 
         binding.fabNewReport.setOnClickListener {
-            findNavController().navigate(R.id.action_reportList_to_reportDetail)
+            val action = ReportListFragmentDirections
+                .actionReportListToCreateReport(reportId = -1)
+            findNavController().navigate(action)
         }
     }
 

@@ -32,25 +32,25 @@ class ReportDetailFragment : Fragment() {
         val reportId = args.reportId
 
         viewModel.getReportById(reportId).observe(viewLifecycleOwner) { report ->
-            report?.let {
-                binding.tvReportTitle.text = it.title
-                binding.tvReportStatus.text = "Estado: ${it.status}"
-                binding.tvReportCategory.text = "Categoría: ${it.category}"
-                binding.tvReportPriority.text = "Prioridad: ${it.priority}"
-                binding.tvReportLocation.text = "Ubicación: ${it.location}"
-                binding.tvReportDate.text = "Fecha: ${it.date}"
-                binding.tvReportDescription.text = it.description
+            if (report == null) return@observe  // AGREGA ESTA LÍNEA
 
-                binding.btnEditReport.setOnClickListener { _ ->
-                    val action = ReportDetailFragmentDirections
-                        .actionReportDetailToCreateReport(reportId = it.id)
-                    findNavController().navigate(action)
-                }
+            binding.tvReportTitle.text = report.title
+            binding.tvReportStatus.text = "Estado: ${report.status}"
+            binding.tvReportCategory.text = "Categoría: ${report.category}"
+            binding.tvReportPriority.text = "Prioridad: ${report.priority}"
+            binding.tvReportLocation.text = "Ubicación: ${report.location}"
+            binding.tvReportDate.text = "Fecha: ${report.date}"
+            binding.tvReportDescription.text = report.description
 
-                binding.btnDeleteReport.setOnClickListener { _ ->
-                    viewModel.deleteReport(it)
-                    findNavController().navigateUp()
-                }
+            binding.btnEditReport.setOnClickListener {
+                val action = ReportDetailFragmentDirections
+                    .actionReportDetailToEditReport(reportId = report.id)
+                findNavController().navigate(action)
+            }
+
+            binding.btnDeleteReport.setOnClickListener {
+                viewModel.deleteReport(report)
+                findNavController().navigateUp()
             }
         }
     }

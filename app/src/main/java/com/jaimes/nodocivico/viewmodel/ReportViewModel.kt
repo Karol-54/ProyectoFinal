@@ -12,6 +12,8 @@ import kotlinx.coroutines.launch
 
 class ReportViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
     private val repository: ReportRepository
     val reports: LiveData<List<Report>>
     val totalReports: LiveData<Int>
@@ -30,7 +32,7 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
         syncedReports = repository.getSyncedReports()
     }
 
-    fun getReportById(id: Int): LiveData<Report> {
+    fun getReportById(id: Int): LiveData<Report?> {
         return repository.getReportById(id)
     }
 

@@ -1,0 +1,35 @@
+{
+  "api_base_url": "https://api.nodocivico.com/v1",
+  "endpoints": {
+    "reportes": {
+      "GET /reports": "Obtener lista de reportes",
+      "POST /reports": "Crear nuevo reporte",
+      "GET /reports/{id}": "Obtener detalle de un reporte",
+      "PUT /reports/{id}": "Actualizar estado de un reporte"
+    },
+    "categorias": {
+      "GET /categories": "Obtener lista de categorías"
+    },
+    "usuarios": {
+      "POST /auth/login": "Iniciar sesión",
+      "POST /auth/register": "Registrar usuario"
+    }
+  },
+  "esquema_reporte": {
+    "id": "integer",
+    "titulo": "string",
+    "descripcion": "string",
+    "categoria": "string",
+    "prioridad": "enum: Alta, Media, Baja",
+    "estado": "enum: Abierto, En proceso, Cerrado",
+    "fecha_creacion": "string (ISO 8601)",
+    "sincronizado": "boolean",
+    "ubicacion": "string"
+  },
+  "esquema_usuario": {
+    "id": "integer",
+    "nombre": "string",
+    "email": "string",
+    "token": "string"
+  }
+}

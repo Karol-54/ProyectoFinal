@@ -46,6 +46,11 @@
         <action
             android:id="@+id/action_reportList_to_reportDetail"
             app:destination="@id/reportDetailFragment"/>
+
+        <action
+            android:id="@+id/action_reportList_to_createReport"
+            app:destination="@id/createReportFragment"/>
+
         <argument
             android:name="reportId"
             app:argType="integer"
@@ -62,8 +67,8 @@
             app:argType="integer"
             android:defaultValue="-1"/>
         <action
-            android:id="@+id/action_reportDetail_to_createReport"
-            app:destination="@id/createReportFragment"/>
+            android:id="@+id/action_reportDetail_to_editReport"
+            app:destination="@id/editReportFragment"/>
     </fragment>
 
     <fragment
@@ -75,6 +80,16 @@
             android:name="reportId"
             app:argType="integer"
             android:defaultValue="-1"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/editReportFragment"
+        android:name="com.jaimes.nodocivico.ui.EditReportFragment"
+        android:label="Editar Reporte"
+        tools:layout="@layout/fragment_create_report">
+        <argument
+            android:name="reportId"
+            app:argType="integer"/>
     </fragment>
 
 </navigation>

@@ -10,7 +10,7 @@ interface ReportDao {
     fun getAllReports(): LiveData<List<ReportEntity>>
 
     @Query("SELECT * FROM reports WHERE id = :id")
-    fun getReportById(id: Int): LiveData<ReportEntity>
+    fun getReportById(id: Int): LiveData<ReportEntity?>
 
     @Query("SELECT * FROM reports WHERE status = :status")
     fun getReportsByStatus(status: String): LiveData<List<ReportEntity>>
