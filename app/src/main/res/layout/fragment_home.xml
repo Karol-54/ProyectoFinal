@@ -166,6 +166,81 @@
 
         </LinearLayout>
 
+        <!-- ACCESOS RÁPIDOS -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accesos rápidos"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/btnGoSync"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sincronización"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#1565C0"/>
+
+            <Button
+                android:id="@+id/btnGoProfile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Perfil"
+                android:backgroundTint="#2E7D32"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/btnGoCalendar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Recordatorios"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#F57C00"/>
+
+            <Button
+                android:id="@+id/btnGoMap"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Zona"
+                android:backgroundTint="#6A1B9A"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnGoSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configuración"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#455A64"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

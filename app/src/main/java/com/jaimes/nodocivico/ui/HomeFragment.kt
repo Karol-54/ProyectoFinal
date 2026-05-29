@@ -47,6 +47,26 @@ class HomeFragment : Fragment() {
         binding.btnViewReports.setOnClickListener {
             findNavController().navigate(R.id.action_home_to_reportList)
         }
+
+        binding.btnGoSync.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_syncStatus)
+        }
+
+        binding.btnGoProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_profile)
+        }
+
+        binding.btnGoCalendar.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_calendar)
+        }
+
+        binding.btnGoMap.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_map)
+        }
+
+        binding.btnGoSettings.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_settings)
+        }
     }
 
     override fun onDestroyView() {

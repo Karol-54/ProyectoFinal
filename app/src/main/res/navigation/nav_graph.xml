@@ -36,6 +36,21 @@
         <action
             android:id="@+id/action_home_to_createReport"
             app:destination="@id/createReportFragment"/>
+        <action
+            android:id="@+id/action_home_to_syncStatus"
+            app:destination="@id/syncStatusFragment"/>
+        <action
+            android:id="@+id/action_home_to_settings"
+            app:destination="@id/settingsFragment"/>
+        <action
+            android:id="@+id/action_home_to_profile"
+            app:destination="@id/profileFragment"/>
+        <action
+            android:id="@+id/action_home_to_calendar"
+            app:destination="@id/calendarRemindersFragment"/>
+        <action
+            android:id="@+id/action_home_to_map"
+            app:destination="@id/mapOrZoneFragment"/>
     </fragment>
 
     <fragment
@@ -91,5 +106,35 @@
             android:name="reportId"
             app:argType="integer"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/syncStatusFragment"
+        android:name="com.jaimes.nodocivico.ui.SyncStatusFragment"
+        android:label="Sincronización"
+        tools:layout="@layout/fragment_sync_status"/>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.jaimes.nodocivico.ui.SettingsFragment"
+        android:label="Configuración"
+        tools:layout="@layout/fragment_settings"/>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.jaimes.nodocivico.ui.ProfileFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/calendarRemindersFragment"
+        android:name="com.jaimes.nodocivico.ui.CalendarRemindersFragment"
+        android:label="Recordatorios"
+        tools:layout="@layout/fragment_calendar_reminders"/>
+
+    <fragment
+        android:id="@+id/mapOrZoneFragment"
+        android:name="com.jaimes.nodocivico.ui.MapOrZoneFragment"
+        android:label="Zona"
+        tools:layout="@layout/fragment_map_zone"/>
 
 </navigation>

@@ -57,4 +57,47 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
     fun selectReport(report: Report) {
         _selectedReport.value = report
     }
+
+    fun syncReports() {
+        viewModelScope.launch {
+            try {
+                val response = com.jaimes.nodocivico.network.RetrofitClient.api.listarReportes()
+                if (response.isSuccessful) {
+                    response.body()?.forEach { reporteApi ->
+                        val report = Report(
+                            id = 0,
+                            title = reporteApi.titulo,
+                            description = reporteApi.descripcion,
+                            category = reporteApi.categoria,
+                            priority = reporteApi.prioridad,
+                            location = reporteApi.ubicacion,
+                            date = reporteApi.fecha,
+                            status = reporteApi.estado
+                        )
+                        repository.insert(report)
+                    }
+                }
+            } catch (e: Exception) {
+                _error.postValue("Error de sincronización: ${e.message}")
+            }
+        }
+    }
+
+    fun pushReportToApi(report: Report) {
+        viewModelScope.launch {
+            try {
+                val reporteApi = com.jaimes.nodocivico.network.ReporteApi(
+                    titulo = report.title,
+                    descripcion = report.description,
+                    categoria = report.category,
+                    prioridad = report.priority,
+                    ubicacion = report.location,
+                    fecha = report.date
+                )
+                com.jaimes.nodocivico.network.RetrofitClient.api.crearReporte(reporteApi)
+            } catch (e: Exception) {
+                _error.postValue("Error al enviar reporte: ${e.message}")
+            }
+        }
+    }
 }

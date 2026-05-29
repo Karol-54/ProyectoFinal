@@ -69,6 +69,13 @@ dependencies {
     // Activity KTX
     implementation("androidx.activity:activity-ktx:1.8.2")
 
+    // Retrofit para consumir la API
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Corrutinas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
