@@ -9,5 +9,6 @@ data class Report(
     val location: String,
     val date: String,
     val status: String = "Pendiente",
-    val userId: Int = 0
+    val userId: Int = 0,
+    val isSynced: Boolean = false
 )

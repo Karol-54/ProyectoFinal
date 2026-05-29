@@ -20,6 +20,11 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
     val pendingReports: LiveData<Int>
     val syncedReports: LiveData<Int>
 
+    val resolvedReports: LiveData<Int>
+
+    private val _syncStatus = MutableLiveData<String>()
+    val syncStatus: LiveData<String> = _syncStatus
+
     private val _selectedReport = MutableLiveData<Report?>()
     val selectedReport: LiveData<Report?> = _selectedReport
 
@@ -30,6 +35,7 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
         totalReports = repository.getTotalReports()
         pendingReports = repository.getPendingReports()
         syncedReports = repository.getSyncedReports()
+        resolvedReports = repository.getResolvedReports()
     }
 
     fun getReportById(id: Int): LiveData<Report?> {
@@ -38,7 +44,8 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
 
     fun addReport(report: Report) {
         viewModelScope.launch {
-            repository.insert(report)
+            val newId = repository.insertAndGetId(report)
+            pushReportToApi(report.copy(id = newId.toInt()))
         }
     }
 
@@ -60,28 +67,62 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
 
     fun syncReports() {
         viewModelScope.launch {
+            _syncStatus.postValue("Sincronizando...")
             try {
+                // 1. Subir reportes locales no sincronizados
+                val localReports = repository.getUnsyncedReports()
+                android.util.Log.d("SYNC", "Reportes no sincronizados: ${localReports.size}")
+                localReports.forEach { report ->
+                    android.util.Log.d("SYNC", "Subiendo reporte ID: ${report.id}, isSynced: ${report.isSynced}")
+                    val reporteApi = com.jaimes.nodocivico.network.ReporteApi(
+                        titulo = report.title,
+                        descripcion = report.description,
+                        categoria = report.category,
+                        prioridad = report.priority,
+                        ubicacion = report.location,
+                        fecha = report.date
+                    )
+                    val response = com.jaimes.nodocivico.network.RetrofitClient.api.crearReporte(reporteApi)
+                    if (response.isSuccessful) {
+                        val newId = response.body()?.id ?: report.id
+                        repository.markAsSynced(report.id, newId)
+                        android.util.Log.d("SYNC", "Marcado como sync. OldID: ${report.id}, NewID: $newId")
+                        val existe = repository.getReportByIdDirect(newId)
+                        android.util.Log.d("SYNC", "Verificando ID $newId en local: ${existe != null}")
+                    }
+                }
+
+                // 2. Bajar reportes de la API que no existen en local
                 val response = com.jaimes.nodocivico.network.RetrofitClient.api.listarReportes()
                 if (response.isSuccessful) {
                     response.body()?.forEach { reporteApi ->
-                        val report = Report(
-                            id = 0,
-                            title = reporteApi.titulo,
-                            description = reporteApi.descripcion,
-                            category = reporteApi.categoria,
-                            priority = reporteApi.prioridad,
-                            location = reporteApi.ubicacion,
-                            date = reporteApi.fecha,
-                            status = reporteApi.estado
-                        )
-                        repository.insert(report)
+                        val existe = repository.getReportByIdDirect(reporteApi.id)
+                        if (existe == null) {
+                            repository.insert(Report(
+                                id = reporteApi.id,
+                                title = reporteApi.titulo,
+                                description = reporteApi.descripcion,
+                                category = reporteApi.categoria,
+                                priority = reporteApi.prioridad,
+                                location = reporteApi.ubicacion,
+                                date = reporteApi.fecha,
+                                status = reporteApi.estado,
+                                isSynced = true
+                            ))
+                        }
                     }
+                    _syncStatus.postValue("Sincronizado ✓")
+                } else {
+                    _syncStatus.postValue("Error al sincronizar")
                 }
             } catch (e: Exception) {
+                _syncStatus.postValue("Sin conexión ✗")
                 _error.postValue("Error de sincronización: ${e.message}")
             }
         }
     }
+
+
 
     fun pushReportToApi(report: Report) {
         viewModelScope.launch {
@@ -94,9 +135,16 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
                     ubicacion = report.location,
                     fecha = report.date
                 )
-                com.jaimes.nodocivico.network.RetrofitClient.api.crearReporte(reporteApi)
+                val response = com.jaimes.nodocivico.network.RetrofitClient.api.crearReporte(reporteApi)
+                if (response.isSuccessful) {
+                    val newId = response.body()?.id ?: report.id
+                    repository.markAsSynced(report.id, newId)
+                    android.util.Log.d("API", "Reporte enviado y marcado como sincronizado")
+                } else {
+                    _error.postValue("Error al enviar: ${response.code()}")
+                }
             } catch (e: Exception) {
-                _error.postValue("Error al enviar reporte: ${e.message}")
+                _error.postValue("Error de red: ${e.message}")
             }
         }
     }

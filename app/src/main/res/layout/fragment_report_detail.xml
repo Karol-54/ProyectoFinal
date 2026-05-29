@@ -75,6 +75,14 @@
             android:text="Eliminar reporte"
             android:backgroundTint="#E53935"/>
 
+        <Button
+            android:id="@+id/btnMarkResolved"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Marcar como resuelto"
+            android:backgroundTint="#2E7D32"
+            android:layout_marginTop="8dp"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

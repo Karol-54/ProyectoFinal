@@ -32,7 +32,7 @@ class ReportDetailFragment : Fragment() {
         val reportId = args.reportId
 
         viewModel.getReportById(reportId).observe(viewLifecycleOwner) { report ->
-            if (report == null) return@observe  // AGREGA ESTA LÍNEA
+            if (report == null) return@observe
 
             binding.tvReportTitle.text = report.title
             binding.tvReportStatus.text = "Estado: ${report.status}"
@@ -50,6 +50,11 @@ class ReportDetailFragment : Fragment() {
 
             binding.btnDeleteReport.setOnClickListener {
                 viewModel.deleteReport(report)
+                findNavController().navigateUp()
+            }
+
+            binding.btnMarkResolved.setOnClickListener {
+                viewModel.updateReport(report.copy(status = "Resuelto"))
                 findNavController().navigateUp()
             }
         }

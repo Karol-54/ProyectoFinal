@@ -32,4 +32,19 @@ interface ReportDao {
 
     @Delete
     suspend fun delete(report: ReportEntity)
+
+    @Query("SELECT * FROM reports WHERE id = :id LIMIT 1")
+    suspend fun getReportByIdDirect(id: Int): ReportEntity?
+
+    @Query("UPDATE reports SET isSynced = 1 WHERE id = :oldId")
+    suspend fun markAsSynced(oldId: Int)
+
+    @Query("SELECT * FROM reports WHERE isSynced = 0")
+    suspend fun getUnsyncedReports(): List<ReportEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAndGetId(report: ReportEntity): Long
+
+    @Query("SELECT COUNT(*) FROM reports WHERE status = 'Resuelto'")
+    fun getResolvedReports(): LiveData<Int>
 }

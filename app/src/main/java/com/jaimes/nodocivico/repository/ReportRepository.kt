@@ -24,6 +24,8 @@ class ReportRepository(private val database: AppDatabase) {
 
     fun getSyncedReports(): LiveData<Int> = database.reportDao().getSyncedReports()
 
+    fun getResolvedReports(): LiveData<Int> = database.reportDao().getResolvedReports()
+
     suspend fun insert(report: Report) {
         database.reportDao().insert(report.toEntity())
     }
@@ -45,7 +47,8 @@ class ReportRepository(private val database: AppDatabase) {
         location = location,
         date = date,
         status = status,
-        userId = userId
+        userId = userId,
+        isSynced = isSynced
     )
 
     private fun Report.toEntity() = ReportEntity(
@@ -57,6 +60,27 @@ class ReportRepository(private val database: AppDatabase) {
         location = location,
         date = date,
         status = status,
-        userId = userId
+        userId = userId,
+        isSynced = isSynced
     )
+
+    suspend fun getReportByIdDirect(id: Int): Report? {
+        return database.reportDao().getReportByIdDirect(id)?.toReport()
+    }
+
+    suspend fun markAsSynced(oldId: Int, newId: Int) {
+        val report = database.reportDao().getReportByIdDirect(oldId)
+        if (report != null) {
+            database.reportDao().delete(report)
+            database.reportDao().insert(report.copy(id = newId, isSynced = true))
+        }
+    }
+
+    suspend fun getUnsyncedReports(): List<Report> {
+        return database.reportDao().getUnsyncedReports().map { it.toReport() }
+    }
+
+    suspend fun insertAndGetId(report: Report): Long {
+        return database.reportDao().insertAndGetId(report.toEntity())
+    }
 }
